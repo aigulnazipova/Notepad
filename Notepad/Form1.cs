@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Notepad
 {
@@ -44,7 +45,7 @@ namespace Notepad
             {
                 try
                 {
-                    StreamReader streamReader = new StreamReader(openFileDialog1.FileName);
+                    StreamReader streamReader = new StreamReader(openFileDialog1.FileName, Encoding.UTF8);
                     richTextBox1.Text = streamReader.ReadToEnd();
                     streamReader.Close();
                     fileName = openFileDialog1.FileName;
@@ -63,19 +64,25 @@ namespace Notepad
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     _fileName = saveFileDialog1.FileName;
+                    
                 }
+                else
+                {
+                    return;
+                }
+                Encoding selectedEncoding = Encoding.UTF8;
             }
             try
             {
-                StreamWriter streamWriter = new StreamWriter(_fileName + ".txt");
+                StreamWriter streamWriter = new StreamWriter(_fileName + ".txt", false, Encoding.UTF8);
                 streamWriter.Write(richTextBox1.Text);
                 streamWriter.Close();
                 fileName = _fileName;
                 isFileChanged = false;
             }
-            catch
+            catch(Exception ex) 
             {
-                MessageBox.Show("Невозможно сохранить файл");
+                MessageBox.Show("Невозможно сохранить файл. Ошибка: " + ex.Message);
             }
             UpdateTitle();
         }
